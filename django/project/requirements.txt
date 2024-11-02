@@ -1,3 +1,9 @@
 asgiref==3.8.1
 Django==5.1.2
+djangorestframework==3.15.2
+Levenshtein==0.26.1
+numpy==2.1.2
+python-Levenshtein==0.26.1
+RapidFuzz==3.10.1
+shapely==2.0.6
 sqlparse==0.5.1
