@@ -85,3 +85,33 @@ def search_within_polygon(request):
             results.append(property)
 
     return Response({"results": results}, status=status.HTTP_200_OK)
+
+
+# new
+from rest_framework import generics
+from .models import Client
+from .serializers import ClientSerializer
+from rest_framework.exceptions import ValidationError
+
+class ClientListCreateView(generics.ListCreateAPIView):
+    queryset = Client.objects.all()
+    serializer_class = ClientSerializer
+
+    def perform_create(self, serializer):
+        if not serializer.validated_data.get('phone_number') and not serializer.validated_data.get('email'):
+            raise ValidationError("Either phone number or email must be provided.")
+        serializer.save()
+
+class ClientRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Client.objects.all()
+    serializer_class = ClientSerializer
+
+    def perform_update(self, serializer):
+        if not serializer.validated_data.get('phone_number') and not serializer.validated_data.get('email'):
+            raise ValidationError("Either phone number or email must be provided.")
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        if instance.offers.exists():
+            raise ValidationError("Cannot delete a client associated with an offer.")
+        instance.delete()

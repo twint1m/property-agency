@@ -61,6 +61,7 @@ class Land(Property):
     area = models.FloatField(blank=True, null=True)
 
 class Offer(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.PROTECT, related_name='offers', blank=True, null=True)
     apartment = models.ForeignKey(Apartment, on_delete=models.PROTECT, blank=True, null=True)
     house = models.ForeignKey(House, on_delete=models.PROTECT, blank=True, null=True)
     land = models.ForeignKey(Land, on_delete=models.PROTECT, blank=True, null=True)
