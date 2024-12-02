@@ -10,11 +10,14 @@ class Client(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}".strip()
 
+from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 class Realtor(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     middle_name = models.CharField(max_length=50)
-    commission_share = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    commission_share = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -62,6 +65,7 @@ class Land(Property):
 
 class Offer(models.Model):
     client = models.ForeignKey(Client, on_delete=models.PROTECT, related_name='offers', blank=True, null=True)
+    realtor = models.ForeignKey(Realtor, on_delete=models.PROTECT, related_name='offers', blank=True, null=True)
     apartment = models.ForeignKey(Apartment, on_delete=models.PROTECT, blank=True, null=True)
     house = models.ForeignKey(House, on_delete=models.PROTECT, blank=True, null=True)
     land = models.ForeignKey(Land, on_delete=models.PROTECT, blank=True, null=True)

@@ -7,7 +7,7 @@ const Home = () => {
             <h1>Real Estate Agency</h1>
             <ul>
                 <li><Link to="/client-form">Client Form</Link></li>
-                {/* Добавьте здесь ссылки на другие формы */}
+                <li><Link to="/realtor-form">Realtor Form</Link></li>
             </ul>
         </div>
     );

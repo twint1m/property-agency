@@ -115,3 +115,36 @@ class ClientRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         if instance.offers.exists():
             raise ValidationError("Cannot delete a client associated with an offer.")
         instance.delete()
+
+
+
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
+from django.db.models import Q
+from Levenshtein import distance as levenshtein_distance
+from .models import Client, Realtor
+from .serializers import ClientSerializer, RealtorSerializer
+
+class RealtorListCreateView(generics.ListCreateAPIView):
+    queryset = Realtor.objects.all()
+    serializer_class = RealtorSerializer
+
+    def perform_create(self, serializer):
+        if not serializer.validated_data.get('first_name') or not serializer.validated_data.get('last_name') or not serializer.validated_data.get('middle_name'):
+            raise ValidationError("First name, last name, and middle name are required.")
+        serializer.save()
+
+class RealtorRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Realtor.objects.all()
+    serializer_class = RealtorSerializer
+
+    def perform_update(self, serializer):
+        if not serializer.validated_data.get('first_name') or not serializer.validated_data.get('last_name') or not serializer.validated_data.get('middle_name'):
+            raise ValidationError("First name, last name, and middle name are required.")
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        if instance.offers.exists():
+            raise ValidationError("Cannot delete a realtor associated with an offer.")
+        instance.delete()

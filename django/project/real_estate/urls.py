@@ -2,7 +2,8 @@ from django.urls import path
 from .views import (
     ApartmentListCreateView, HouseListCreateView, LandListCreateView,
     OfferListCreateView, fuzzy_search, search_within_polygon,
-    ClientListCreateView, ClientRetrieveUpdateDestroyView
+    ClientListCreateView, ClientRetrieveUpdateDestroyView,
+    RealtorListCreateView, RealtorRetrieveUpdateDestroyView
 )
 
 urlpatterns = [
@@ -14,4 +15,6 @@ urlpatterns = [
     path('search/within_polygon/', search_within_polygon, name='search-within-polygon'),
     path('clients/', ClientListCreateView.as_view(), name='client-list-create'),
     path('clients/<int:pk>/', ClientRetrieveUpdateDestroyView.as_view(), name='client-retrieve-update-destroy'),
+    path('realtors/', RealtorListCreateView.as_view(), name='realtor-list-create'),
+    path('realtors/<int:pk>/', RealtorRetrieveUpdateDestroyView.as_view(), name='realtor-retrieve-update-destroy'),
 ]
