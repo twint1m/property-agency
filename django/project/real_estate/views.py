@@ -6,6 +6,30 @@ from Levenshtein import distance as levenshtein_distance
 from .models import Client, Realtor
 from .serializers import ClientSerializer, RealtorSerializer
 
+
+
+
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
+from fuzzywuzzy import fuzz
+from .models import Client, Realtor
+from .serializers import ClientSerializer, RealtorSerializer
+
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
+from fuzzywuzzy import fuzz
+from .models import Client, Realtor
+from .serializers import ClientSerializer, RealtorSerializer
+
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
+from fuzzywuzzy import fuzz
+from .models import Client, Realtor
+from .serializers import ClientSerializer, RealtorSerializer
+
 class FuzzySearchView(generics.GenericAPIView):
     serializer_class = ClientSerializer
 
@@ -28,7 +52,8 @@ class FuzzySearchView(generics.GenericAPIView):
 
         for obj in queryset:
             full_name = f"{obj.first_name or ''} {obj.last_name or ''} {obj.middle_name or ''}".strip()
-            if levenshtein_distance(full_name, query) <= 3:
+            ratio = fuzz.partial_ratio(full_name.lower(), query.lower())
+            if ratio >= 70:  # Adjust the threshold as needed
                 results.append(serializer_class(obj).data)
 
         return results

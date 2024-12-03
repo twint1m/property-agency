@@ -8,6 +8,7 @@ const Home = () => {
             <ul>
                 <li><Link to="/client-form">Client Form</Link></li>
                 <li><Link to="/realtor-form">Realtor Form</Link></li>
+                <li><Link to="/fuzzy-search">Fuzzy Search</Link></li>
             </ul>
         </div>
     );

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Home from './components/Home';
 import ClientFormPage from './components/pages/ClientFormPage';
 import RealtorFormPage from './components/pages/RealtorFormPage';
+import FuzzySearch from './components/FuzzySearch';
 
 const App = () => {
     return (
@@ -11,6 +12,7 @@ const App = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/client-form" element={<ClientFormPage />} />
                 <Route path="/realtor-form" element={<RealtorFormPage />} />
+                <Route path="/fuzzy-search" element={<FuzzySearch />} />
             </Routes>
         </Router>
     );

@@ -3,7 +3,8 @@ from .views import (
     ApartmentListCreateView, HouseListCreateView, LandListCreateView,
     OfferListCreateView, fuzzy_search, search_within_polygon,
     ClientListCreateView, ClientRetrieveUpdateDestroyView,
-    RealtorListCreateView, RealtorRetrieveUpdateDestroyView
+    RealtorListCreateView, RealtorRetrieveUpdateDestroyView,
+    FuzzySearchView
 )
 
 urlpatterns = [
@@ -17,4 +18,5 @@ urlpatterns = [
     path('clients/<int:pk>/', ClientRetrieveUpdateDestroyView.as_view(), name='client-retrieve-update-destroy'),
     path('realtors/', RealtorListCreateView.as_view(), name='realtor-list-create'),
     path('realtors/<int:pk>/', RealtorRetrieveUpdateDestroyView.as_view(), name='realtor-retrieve-update-destroy'),
+    path('fuzzy_search/', FuzzySearchView.as_view(), name='fuzzy-search'),
 ]
