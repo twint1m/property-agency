@@ -173,3 +173,70 @@ class RealtorRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         if instance.offers.exists():
             raise ValidationError("Cannot delete a realtor associated with an offer.")
         instance.delete()
+
+
+from rest_framework import generics
+from rest_framework.exceptions import ValidationError
+from .models import Apartment, House, Land
+from .serializers import ApartmentSerializer, HouseSerializer, LandSerializer
+
+class ApartmentListCreateView(generics.ListCreateAPIView):
+    queryset = Apartment.objects.all()
+    serializer_class = ApartmentSerializer
+
+class HouseListCreateView(generics.ListCreateAPIView):
+    queryset = House.objects.all()
+    serializer_class = HouseSerializer
+
+class LandListCreateView(generics.ListCreateAPIView):
+    queryset = Land.objects.all()
+    serializer_class = LandSerializer
+
+class ApartmentRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Apartment.objects.all()
+    serializer_class = ApartmentSerializer
+
+    def perform_destroy(self, instance):
+        if instance.offers.exists():
+            raise ValidationError("Cannot delete a property associated with an offer.")
+        instance.delete()
+
+class HouseRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = House.objects.all()
+    serializer_class = HouseSerializer
+
+    def perform_destroy(self, instance):
+        if instance.offers.exists():
+            raise ValidationError("Cannot delete a property associated with an offer.")
+        instance.delete()
+
+class LandRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Land.objects.all()
+    serializer_class = LandSerializer
+
+    def perform_destroy(self, instance):
+        if instance.offers.exists():
+            raise ValidationError("Cannot delete a property associated with an offer.")
+        instance.delete()
+
+
+from django.db.models import Q
+from .serializers import PropertySerializer
+
+class PropertyFilterView(generics.ListAPIView):
+    serializer_class = PropertySerializer
+
+    def get_queryset(self):
+        queryset = Property.objects.all()
+        property_type = self.request.query_params.get('type')
+        city = self.request.query_params.get('city')
+        street = self.request.query_params.get('street')
+
+        if property_type:
+            queryset = queryset.filter(type=property_type)
+        if city:
+            queryset = queryset.filter(city__icontains=city)
+        if street:
+            queryset = queryset.filter(street__icontains=street)
+
+        return queryset

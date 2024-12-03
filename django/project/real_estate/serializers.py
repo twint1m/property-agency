@@ -18,17 +18,23 @@ class PropertySerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
 
-class ApartmentSerializer(PropertySerializer):
-    class Meta(PropertySerializer.Meta):
+from rest_framework import serializers
+from .models import Apartment, House, Land
+
+class ApartmentSerializer(serializers.ModelSerializer):
+    class Meta:
         model = Apartment
+        fields = '__all__'
 
-class HouseSerializer(PropertySerializer):
-    class Meta(PropertySerializer.Meta):
+class HouseSerializer(serializers.ModelSerializer):
+    class Meta:
         model = House
+        fields = '__all__'
 
-class LandSerializer(PropertySerializer):
-    class Meta(PropertySerializer.Meta):
+class LandSerializer(serializers.ModelSerializer):
+    class Meta:
         model = Land
+        fields = '__all__'
 
 class OfferSerializer(serializers.ModelSerializer):
     class Meta:
@@ -40,3 +46,5 @@ class OfferSerializer(serializers.ModelSerializer):
         if sum(bool(field) for field in property_fields) != 1:
             raise serializers.ValidationError("Укажите только один тип недвижимости для предложения.")
         return data
+
+

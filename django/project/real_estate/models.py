@@ -27,13 +27,10 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from shapely.geometry import Point, Polygon
 
+from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 class Property(models.Model):
-    PROPERTY_TYPES = [
-        ('apartment', 'Квартира'),
-        ('house', 'Дом'),
-        ('land', 'Земля'),
-    ]
-    type = models.CharField(max_length=20, choices=PROPERTY_TYPES)
     city = models.CharField(max_length=100, blank=True, null=True)
     street = models.CharField(max_length=100, blank=True, null=True)
     house_number = models.CharField(max_length=10, blank=True, null=True)
