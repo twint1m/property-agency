@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import ClientForm from './ClientForm';
-import Input from './ui/Input';
-import Button from './ui/Button';
+import ClientForm from './ClientForm.tsx';
+import Input from '../ui/Input.tsx';
+import Button from '../ui/Button.tsx';
 
 const UpdateClient = ({ onSuccess }) => {
     const [clientId, setClientId] = useState('');

@@ -1,8 +1,8 @@
 import React from 'react';
 import Tabs from '../ui/Tabs';
-import CreateRealtor from '../CreateRealtor';
-import UpdateRealtor from '../UpdateRealtor';
-import DeleteRealtor from '../DeleteRealtor';
+import CreateRealtor from '../Realtor/CreateRealtor.tsx';
+import UpdateRealtor from '../Realtor/UpdateRealtor.tsx';
+import DeleteRealtor from '../Realtor/DeleteRealtor.tsx';
 
 const RealtorFormPage = () => {
     const handleSuccess = (realtor) => {

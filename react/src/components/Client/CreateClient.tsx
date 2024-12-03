@@ -1,5 +1,5 @@
 import React from 'react';
-import ClientForm from './ClientForm';
+import ClientForm from './ClientForm.tsx';
 
 const CreateClient = ({ onSuccess }) => {
     return (

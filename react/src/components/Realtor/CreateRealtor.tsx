@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import axiosInstance from '../axiosConfig';
-import Input from './ui/Input';
-import Button from './ui/Button';
+import React, { useState } from 'react';
+import axiosInstance from '../../axiosConfig.ts';
+import Input from '../ui/Input.tsx';
+import Button from '../ui/Button.tsx';
 
-const UpdateRealtor = ({ onSuccess }) => {
-    const [realtorId, setRealtorId] = useState('');
+const CreateRealtor = ({ onSuccess }) => {
     const [realtor, setRealtor] = useState({
         first_name: '',
         last_name: '',
@@ -12,18 +11,6 @@ const UpdateRealtor = ({ onSuccess }) => {
         commission_share: ''
     });
     const [error, setError] = useState('');
-
-    useEffect(() => {
-        if (realtorId) {
-            axiosInstance.get(`/realtors/${realtorId}/`)
-                .then(response => setRealtor(response.data))
-                .catch(error => console.error(error));
-        }
-    }, [realtorId]);
-
-    const handleIdChange = (e) => {
-        setRealtorId(e.target.value);
-    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -37,7 +24,7 @@ const UpdateRealtor = ({ onSuccess }) => {
             return;
         }
 
-        axiosInstance.put(`/realtors/${realtorId}/`, realtor)
+        axiosInstance.post('/realtors/', realtor)
             .then(response => {
                 onSuccess(response.data);
                 setError('');
@@ -50,8 +37,7 @@ const UpdateRealtor = ({ onSuccess }) => {
 
     return (
         <div>
-            <h2>Update Realtor</h2>
-            <Input type="text" value={realtorId} onChange={handleIdChange} placeholder="Realtor ID" />
+            <h2>Create Realtor</h2>
             <form onSubmit={handleSubmit}>
                 <Input type="text" name="first_name" value={realtor.first_name} onChange={handleChange} placeholder="First Name" />
                 <Input type="text" name="last_name" value={realtor.last_name} onChange={handleChange} placeholder="Last Name" />
@@ -64,4 +50,4 @@ const UpdateRealtor = ({ onSuccess }) => {
     );
 };
 
-export default UpdateRealtor;
+export default CreateRealtor;

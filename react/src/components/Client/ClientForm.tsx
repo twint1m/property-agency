@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import axiosInstance from '../axiosConfig';
-import Input from './ui/Input';
-import Button from './ui/Button';
+import axiosInstance from '../../axiosConfig.ts';
+import Input from '../ui/Input.tsx';
+import Button from '../ui/Button.tsx';
 
 const ClientForm = ({ clientId, onSuccess }) => {
     const [client, setClient] = useState({

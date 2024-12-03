@@ -1,8 +1,8 @@
 import React from 'react';
 import Tabs from '../ui/Tabs';
-import CreateClient from '../CreateClient';
-import UpdateClient from '../UpdateClient';
-import DeleteClient from '../DeleteClient';
+import CreateClient from '../Client/CreateClient.tsx';
+import UpdateClient from '../Client/UpdateClient.tsx';
+import DeleteClient from '../Client/DeleteClient.tsx';
 
 const ClientFormPage = () => {
     const handleSuccess = (client) => {
