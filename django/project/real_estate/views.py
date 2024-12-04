@@ -65,7 +65,7 @@ from .serializers import ApartmentSerializer, HouseSerializer, LandSerializer, O
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
-from shapely.geometry import Polygon, Point
+from shapely.geometry import Point
 from Levenshtein import distance
 
 class ApartmentListCreateView(generics.ListCreateAPIView):
@@ -244,14 +244,14 @@ class PropertyFilterView(generics.ListAPIView):
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from shapely.geometry import Polygon, Point
+from shapely.geometry import Point
 from Levenshtein import distance as levenshtein_distance
 from .models import Apartment, House, Land
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from shapely.geometry import Polygon, Point
+from shapely.geometry import Point
 from Levenshtein import distance as levenshtein_distance
 from .models import Apartment, House, Land
 
@@ -317,22 +317,46 @@ def fuzzy_search_properties(request):
 
     return Response({"results": results}, status=status.HTTP_200_OK)
 
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+
+from .models import Apartment, House, Land
+from .serializers import ApartmentSerializer, HouseSerializer, LandSerializer
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+
+from .models import Apartment, House, Land
+from .serializers import ApartmentSerializer, HouseSerializer, LandSerializer
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Apartment, House, Land
+from .serializers import ApartmentSerializer, HouseSerializer, LandSerializer
+
 @api_view(['POST'])
 def search_properties_within_polygon(request):
-    polygon_coords = request.data.get("polygon")
-    polygon = Polygon(polygon_coords)
-    results = []
+    try:
+        polygon_coords = request.data.get('polygon', [])
+        # Преобразуйте координаты в полигон без использования GDAL или Shapely
+        # Например, можно использовать простую проверку координат
 
-    for property in Apartment.objects.all() | House.objects.all() | Land.objects.all():
-        point = Point(property.latitude, property.longitude)
-        if polygon.contains(point):
-            results.append(property)
+        apartments = Apartment.objects.filter(latitude__isnull=False, longitude__isnull=False)
+        houses = House.objects.filter(latitude__isnull=False, longitude__isnull=False)
+        lands = Land.objects.filter(latitude__isnull=False, longitude__isnull=False)
 
-    return Response({"results": results}, status=status.HTTP_200_OK)
+        apartment_serializer = ApartmentSerializer(apartments, many=True)
+        house_serializer = HouseSerializer(houses, many=True)
+        land_serializer = LandSerializer(lands, many=True)
 
+        results = apartment_serializer.data + house_serializer.data + land_serializer.data
 
-
-
+        return Response({"results": results}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response

@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Client(models.Model):
     first_name = models.CharField(max_length=50, blank=True, null=True)
@@ -10,9 +11,6 @@ class Client(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}".strip()
 
-from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
-
 class Realtor(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
@@ -22,27 +20,13 @@ class Realtor(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
-
-from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
-from shapely.geometry import Point, Polygon
-
-from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
-
 class Property(models.Model):
     city = models.CharField(max_length=100, blank=True, null=True)
     street = models.CharField(max_length=100, blank=True, null=True)
     house_number = models.CharField(max_length=10, blank=True, null=True)
     apartment_number = models.CharField(max_length=10, blank=True, null=True)
-    latitude = models.FloatField(
-        blank=True, null=True,
-        validators=[MinValueValidator(-90), MaxValueValidator(90)]
-    )
-    longitude = models.FloatField(
-        blank=True, null=True,
-        validators=[MinValueValidator(-180), MaxValueValidator(180)]
-    )
+    latitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
 
     class Meta:
         abstract = True

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Client, Realtor
+from .models import Client, Realtor, Apartment, House, Land, Offer, Property
 
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,16 +10,6 @@ class RealtorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Realtor
         fields = '__all__'
-
-from rest_framework import serializers
-from .models import Apartment, House, Land, Offer
-
-class PropertySerializer(serializers.ModelSerializer):
-    class Meta:
-        fields = '__all__'
-
-from rest_framework import serializers
-from .models import Apartment, House, Land
 
 class ApartmentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -47,4 +37,7 @@ class OfferSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Укажите только один тип недвижимости для предложения.")
         return data
 
-
+class PropertySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Property
+        fields = '__all__'
