@@ -240,3 +240,183 @@ class PropertyFilterView(generics.ListAPIView):
             queryset = queryset.filter(street__icontains=street)
 
         return queryset
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from shapely.geometry import Polygon, Point
+from Levenshtein import distance as levenshtein_distance
+from .models import Apartment, House, Land
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from shapely.geometry import Polygon, Point
+from Levenshtein import distance as levenshtein_distance
+from .models import Apartment, House, Land
+
+@api_view(['GET'])
+def fuzzy_search_properties(request):
+    query_city = request.GET.get("city", "")
+    query_street = request.GET.get("street", "")
+    query_house_number = request.GET.get("house_number", "")
+    query_apartment_number = request.GET.get("apartment_number", "")
+    results = []
+
+    apartments = Apartment.objects.all()
+    houses = House.objects.all()
+    lands = Land.objects.all()
+
+    for property in apartments:
+        city_dist = levenshtein_distance(property.city or "", query_city)
+        street_dist = levenshtein_distance(property.street or "", query_street)
+        house_number_dist = levenshtein_distance(property.house_number or "", query_house_number)
+        apartment_number_dist = levenshtein_distance(property.apartment_number or "", query_apartment_number)
+
+        if city_dist <= 3 and street_dist <= 3 and house_number_dist <= 1 and apartment_number_dist <= 1:
+            results.append({
+                "type": "Apartment",
+                "id": property.id,
+                "city": property.city,
+                "street": property.street,
+                "house_number": property.house_number,
+                "apartment_number": property.apartment_number
+            })
+
+    for property in houses:
+        city_dist = levenshtein_distance(property.city or "", query_city)
+        street_dist = levenshtein_distance(property.street or "", query_street)
+        house_number_dist = levenshtein_distance(property.house_number or "", query_house_number)
+        apartment_number_dist = levenshtein_distance(property.apartment_number or "", query_apartment_number)
+
+        if city_dist <= 3 and street_dist <= 3 and house_number_dist <= 1 and apartment_number_dist <= 1:
+            results.append({
+                "type": "House",
+                "id": property.id,
+                "city": property.city,
+                "street": property.street,
+                "house_number": property.house_number,
+                "apartment_number": property.apartment_number
+            })
+
+    for property in lands:
+        city_dist = levenshtein_distance(property.city or "", query_city)
+        street_dist = levenshtein_distance(property.street or "", query_street)
+        house_number_dist = levenshtein_distance(property.house_number or "", query_house_number)
+        apartment_number_dist = levenshtein_distance(property.apartment_number or "", query_apartment_number)
+
+        if city_dist <= 3 and street_dist <= 3 and house_number_dist <= 1 and apartment_number_dist <= 1:
+            results.append({
+                "type": "Land",
+                "id": property.id,
+                "city": property.city,
+                "street": property.street,
+                "house_number": property.house_number,
+                "apartment_number": property.apartment_number
+            })
+
+    return Response({"results": results}, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+def search_properties_within_polygon(request):
+    polygon_coords = request.data.get("polygon")
+    polygon = Polygon(polygon_coords)
+    results = []
+
+    for property in Apartment.objects.all() | House.objects.all() | Land.objects.all():
+        point = Point(property.latitude, property.longitude)
+        if polygon.contains(point):
+            results.append(property)
+
+    return Response({"results": results}, status=status.HTTP_200_OK)
+
+
+
+
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Client
+from .serializers import ClientSerializer
+from Levenshtein import distance as levenshtein_distance
+
+@api_view(['GET'])
+def search_clients(request):
+    query = request.GET.get("query", "")
+    results = []
+
+    for client in Client.objects.all():
+        full_name = f"{client.first_name or ''} {client.last_name or ''}".strip()
+        if levenshtein_distance(full_name.lower(), query.lower()) <= 3:
+            results.append(client)
+
+    serializer = ClientSerializer(results, many=True)
+    return Response({"clients": serializer.data}, status=status.HTTP_200_OK)
+
+
+
+    from rest_framework import generics
+    from rest_framework.response import Response
+    from rest_framework.exceptions import ValidationError
+    from Levenshtein import distance as levenshtein_distance
+    from .models import Apartment, House, Land
+    from .serializers import ApartmentSerializer, HouseSerializer, LandSerializer
+
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
+from Levenshtein import distance as levenshtein_distance
+from .models import Apartment, House, Land
+from .serializers import ApartmentSerializer, HouseSerializer, LandSerializer
+
+class PropertyFuzzySearchView(generics.GenericAPIView):
+    def get(self, request, *args, **kwargs):
+        query_city = request.query_params.get('city', '')
+        query_street = request.query_params.get('street', '')
+        query_house_number = request.query_params.get('house_number', '')
+        query_apartment_number = request.query_params.get('apartment_number', '')
+
+        if not query_city and not query_street and not query_house_number and not query_apartment_number:
+            raise ValidationError("At least one search parameter is required.")
+
+        apartments = Apartment.objects.all()
+        houses = House.objects.all()
+        lands = Land.objects.all()
+
+        apartment_matches = self.get_fuzzy_matches(Apartment, query_city, query_street, query_house_number, query_apartment_number, ApartmentSerializer)
+        house_matches = self.get_fuzzy_matches(House, query_city, query_street, query_house_number, query_apartment_number, HouseSerializer)
+        land_matches = self.get_fuzzy_matches(Land, query_city, query_street, query_house_number, query_apartment_number, LandSerializer)
+
+        print(f"Search query: city={query_city}, street={query_street}, house_number={query_house_number}, apartment_number={query_apartment_number}")
+        print(f"Apartment matches: {apartment_matches}")
+        print(f"House matches: {house_matches}")
+        print(f"Land matches: {land_matches}")
+
+        return Response({
+            "results": {
+                "apartments": apartment_matches,
+                "houses": house_matches,
+                "lands": land_matches,
+            }
+        })
+
+    def get_fuzzy_matches(self, model, query_city, query_street, query_house_number, query_apartment_number, serializer_class):
+        results = []
+        queryset = model.objects.all()
+
+        for obj in queryset:
+            city_dist = levenshtein_distance(obj.city or "", query_city) if query_city else 0
+            street_dist = levenshtein_distance(obj.street or "", query_street) if query_street else 0
+            house_number_dist = levenshtein_distance(obj.house_number or "", query_house_number) if query_house_number else 0
+            apartment_number_dist = levenshtein_distance(obj.apartment_number or "", query_apartment_number) if query_apartment_number else 0
+
+            print(f"Comparing: {obj.city} with {query_city}, distance: {city_dist}")
+            print(f"Comparing: {obj.street} with {query_street}, distance: {street_dist}")
+            print(f"Comparing: {obj.house_number} with {query_house_number}, distance: {house_number_dist}")
+            print(f"Comparing: {obj.apartment_number} with {query_apartment_number}, distance: {apartment_number_dist}")
+
+            if (not query_city or city_dist <= 3) and (not query_street or street_dist <= 3) and (not query_house_number or house_number_dist <= 1) and (not query_apartment_number or apartment_number_dist <= 1):
+                results.append(serializer_class(obj).data)
+
+        return results

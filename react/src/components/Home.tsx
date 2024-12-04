@@ -11,6 +11,7 @@ const Home = () => {
                     <li><Link to="/realtor-form">Realtor Form</Link></li>
                     <li><Link to="/fuzzy-search">Fuzzy Search</Link></li>
                     <li><Link to="/property-form">Property Form</Link></li>
+                    <li><Link to="/property-search">Property Search</Link></li>
                 </ul>
             </nav>
         </div>

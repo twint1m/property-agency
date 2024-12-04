@@ -6,7 +6,8 @@ from .views import (
     RealtorListCreateView, RealtorRetrieveUpdateDestroyView,
     FuzzySearchView, ApartmentRetrieveUpdateDestroyView,
     HouseRetrieveUpdateDestroyView, LandRetrieveUpdateDestroyView,
-    PropertyFilterView
+    PropertyFilterView, fuzzy_search_properties, search_properties_within_polygon,
+    search_clients, PropertyFuzzySearchView
 )
 
 urlpatterns = [
@@ -25,4 +26,7 @@ urlpatterns = [
     path('realtors/<int:pk>/', RealtorRetrieveUpdateDestroyView.as_view(), name='realtor-retrieve-update-destroy'),
     path('fuzzy_search/', FuzzySearchView.as_view(), name='fuzzy-search'),
     path('properties/filter/', PropertyFilterView.as_view(), name='property-filter'),
+    path('search/fuzzy_properties/', PropertyFuzzySearchView.as_view(), name='fuzzy-search-properties'),
+    path('search/within_polygon_properties/', search_properties_within_polygon, name='search-within-polygon-properties'),
+    path('clients/search/', search_clients, name='search-clients'),
 ]

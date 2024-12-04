@@ -5,6 +5,7 @@ import ClientFormPage from './components/pages/ClientFormPage';
 import RealtorFormPage from './components/pages/RealtorFormPage';
 import FuzzySearch from './components/FuzzySearch';
 import PropertyFormPage from './components/pages/PropertyFormPage';
+import PropertySearchPage from './components/pages/PropertySearchPage';
 
 const App = () => {
     return (
@@ -15,6 +16,7 @@ const App = () => {
                 <Route path="/realtor-form" element={<RealtorFormPage />} />
                 <Route path="/fuzzy-search" element={<FuzzySearch />} />
                 <Route path="/property-form" element={<PropertyFormPage />} />
+                <Route path="/property-search" element={<PropertySearchPage />} />
             </Routes>
         </Router>
     );
