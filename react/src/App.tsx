@@ -8,6 +8,8 @@ import PropertyFormPage from './components/pages/PropertyFormPage';
 import PropertySearchPage from './components/pages/PropertySearchPage';
 import OfferFormPage from './components/pages/OfferFormPage';
 import NeedFormPage from './components/pages/NeedFormPage';
+import ClientNeedsPage from './components/pages/ClientNeedsPage';
+import ClientRealtorManagementPage from './components/pages/ClientRealtorManagementPage';
 
 const App = () => {
     return (
@@ -21,6 +23,8 @@ const App = () => {
                 <Route path="/property-search" element={<PropertySearchPage />} />
                 <Route path="/offer-form" element={<OfferFormPage />} />
                 <Route path="/need-form" element={<NeedFormPage />} />
+                <Route path="/client-needs" element={<ClientNeedsPage />} />
+                <Route path="/client-realtor-management" element={<ClientRealtorManagementPage />} />
             </Routes>
         </Router>
     );

@@ -1,3 +1,4 @@
+// react/src/components/Home.tsx
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -14,6 +15,11 @@ const Home = () => {
                     <li><Link to="/property-search">Property Search</Link></li>
                     <li><Link to="/offer-form">Offer Form</Link></li>
                     <li><Link to="/need-form">Need Form</Link></li>
+                    <li><Link to="/client-needs">Client Needs</Link></li>
+                    <li><Link to="/client-offers">Client Offers</Link></li>
+                    <li><Link to="/realtor-needs">Realtor Needs</Link></li>
+                    <li><Link to="/realtor-offers">Realtor Offers</Link></li>
+                    <li><Link to="/client-realtor-management">Client and Realtor Management</Link></li>
                 </ul>
             </nav>
         </div>

@@ -527,3 +527,22 @@ class NeedRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         if instance.offers.exists():
             raise ValidationError("Cannot delete a need associated with an offer.")
         instance.delete()
+
+from rest_framework import generics
+from .models import Need
+from .serializers import NeedSerializer
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+
+class NeedListCreateView(generics.ListCreateAPIView):
+    queryset = Need.objects.all()
+    serializer_class = NeedSerializer
+
+class NeedRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Need.objects.all()
+    serializer_class = NeedSerializer
+
+@api_view(['GET'])
+def property_type_list(request):
+    property_types = [{"value": choice[0], "label": choice[1]} for choice in Need.PROPERTY_TYPE_CHOICES]
+    return Response(property_types)

@@ -1,8 +1,6 @@
-// NeedForm.tsx
 import React, { useState, useEffect } from 'react';
 import axiosInstance from "../../axiosConfig.ts";
 import Input from '../ui/Input.tsx';
-import Select from '../ui/Select.tsx';
 import Button from '../ui/Button.tsx';
 
 const NeedForm = ({ needId, onSuccess }) => {
@@ -25,14 +23,31 @@ const NeedForm = ({ needId, onSuccess }) => {
     const [clients, setClients] = useState([]);
     const [realtors, setRealtors] = useState([]);
 
+    const propertyTypes = [
+        { value: 'apartment', label: 'Apartment' },
+        { value: 'house', label: 'House' },
+        { value: 'land', label: 'Land' }
+    ];
+
     useEffect(() => {
-        axiosInstance.get('/clients/').then(response => setClients(response.data));
-        axiosInstance.get('/realtors/').then(response => setRealtors(response.data));
+        axiosInstance.get('/clients/')
+            .then(response => {
+                setClients(response.data);
+            })
+            .catch(error => console.error('Error fetching clients:', error));
+
+        axiosInstance.get('/realtors/')
+            .then(response => {
+                setRealtors(response.data);
+            })
+            .catch(error => console.error('Error fetching realtors:', error));
 
         if (needId) {
             axiosInstance.get(`/needs/${needId}/`)
-                .then(response => setNeed(response.data))
-                .catch(error => console.error(error));
+                .then(response => {
+                    setNeed(response.data);
+                })
+                .catch(error => console.error('Error fetching need:', error));
         }
     }, [needId]);
 
@@ -43,23 +58,56 @@ const NeedForm = ({ needId, onSuccess }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        const transformedNeed = {
+            ...need,
+            client: need.client || null,
+            realtor: need.realtor || null,
+            property_type: need.property_type || null,
+            address: need.address || null,
+            min_price: need.min_price || null,
+            max_price: need.max_price || null,
+            min_area: need.min_area || null,
+            max_area: need.max_area || null,
+            min_rooms: need.min_rooms || null,
+            max_rooms: need.max_rooms || null,
+            min_floor: need.min_floor || null,
+            max_floor: need.max_floor || null,
+            min_floors: need.min_floors || null,
+            max_floors: need.max_floors || null
+        };
+
         const request = needId
-            ? axiosInstance.put(`/needs/${needId}/`, need)
-            : axiosInstance.post('/needs/', need);
+            ? axiosInstance.put(`/needs/${needId}/`, transformedNeed)
+            : axiosInstance.post('/needs/', transformedNeed);
 
         request.then(response => {
             onSuccess(response.data);
         }).catch(error => {
-            console.error(error);
+            console.error('Error submitting form:', error);
             alert("An error occurred. Please try again.");
         });
     };
 
     return (
         <form onSubmit={handleSubmit}>
-            <Select name="client" value={need.client} onChange={handleChange} options={clients} placeholder="Select Client" />
-            <Select name="realtor" value={need.realtor} onChange={handleChange} options={realtors} placeholder="Select Realtor" />
-            <Select name="property_type" value={need.property_type} onChange={handleChange} options={['apartment', 'house', 'land']} placeholder="Select Property Type" />
+            <select name="client" value={need.client} onChange={handleChange}>
+                <option value="">Select Client</option>
+                {clients.map(client => (
+                    <option key={client.id} value={client.id}>{client.first_name} {client.last_name}</option>
+                ))}
+            </select>
+            <select name="realtor" value={need.realtor} onChange={handleChange}>
+                <option value="">Select Realtor</option>
+                {realtors.map(realtor => (
+                    <option key={realtor.id} value={realtor.id}>{realtor.first_name} {realtor.last_name}</option>
+                ))}
+            </select>
+            <select name="property_type" value={need.property_type} onChange={handleChange}>
+                <option value="">Select Property Type</option>
+                {propertyTypes.map(type => (
+                    <option key={type.value} value={type.value}>{type.label}</option>
+                ))}
+            </select>
             <Input type="text" name="address" value={need.address} onChange={handleChange} placeholder="Address" />
             <Input type="number" name="min_price" value={need.min_price} onChange={handleChange} placeholder="Min Price" />
             <Input type="number" name="max_price" value={need.max_price} onChange={handleChange} placeholder="Max Price" />
