@@ -52,3 +52,30 @@ class Offer(models.Model):
     land = models.ForeignKey(Land, on_delete=models.PROTECT, blank=True, null=True)
     description = models.TextField(blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+
+from django.db import models
+
+class Need(models.Model):
+    PROPERTY_TYPE_CHOICES = [
+        ('apartment', 'Apartment'),
+        ('house', 'House'),
+        ('land', 'Land'),
+    ]
+
+    client = models.ForeignKey(Client, on_delete=models.PROTECT)
+    realtor = models.ForeignKey(Realtor, on_delete=models.PROTECT)
+    property_type = models.CharField(max_length=10, choices=PROPERTY_TYPE_CHOICES)
+    address = models.CharField(max_length=255)
+    min_price = models.PositiveIntegerField()
+    max_price = models.PositiveIntegerField()
+    min_area = models.PositiveIntegerField(null=True, blank=True)
+    max_area = models.PositiveIntegerField(null=True, blank=True)
+    min_rooms = models.PositiveIntegerField(null=True, blank=True)
+    max_rooms = models.PositiveIntegerField(null=True, blank=True)
+    min_floor = models.PositiveIntegerField(null=True, blank=True)
+    max_floor = models.PositiveIntegerField(null=True, blank=True)
+    min_floors = models.PositiveIntegerField(null=True, blank=True)
+    max_floors = models.PositiveIntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.client} - {self.property_type} need"

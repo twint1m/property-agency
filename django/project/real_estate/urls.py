@@ -1,13 +1,15 @@
 from django.urls import path
 from .views import (
-    ApartmentListCreateView, HouseListCreateView, LandListCreateView,
-    OfferListCreateView, fuzzy_search, search_within_polygon,
+    ApartmentListCreateView, ApartmentRetrieveUpdateDestroyView,
+    HouseListCreateView, HouseRetrieveUpdateDestroyView,
+    LandListCreateView, LandRetrieveUpdateDestroyView,
+    OfferListCreateView, OfferRetrieveUpdateDestroyView,
+    fuzzy_search, search_within_polygon, search_clients,
+    FuzzySearchView, PropertyFilterView, PropertyFuzzySearchView,
+    PropertyListView, search_properties_within_polygon,
     ClientListCreateView, ClientRetrieveUpdateDestroyView,
     RealtorListCreateView, RealtorRetrieveUpdateDestroyView,
-    FuzzySearchView, ApartmentRetrieveUpdateDestroyView,
-    HouseRetrieveUpdateDestroyView, LandRetrieveUpdateDestroyView,
-    PropertyFilterView, fuzzy_search_properties, search_properties_within_polygon,
-    search_clients, PropertyFuzzySearchView
+    NeedListCreateView, NeedRetrieveUpdateDestroyView
 )
 
 urlpatterns = [
@@ -18,6 +20,7 @@ urlpatterns = [
     path('lands/', LandListCreateView.as_view(), name='land-list-create'),
     path('lands/<int:pk>/', LandRetrieveUpdateDestroyView.as_view(), name='land-retrieve-update-destroy'),
     path('offers/', OfferListCreateView.as_view(), name='offer-list'),
+    path('offers/<int:pk>/', OfferRetrieveUpdateDestroyView.as_view(), name='offer-retrieve-update-destroy'),
     path('search/fuzzy/', fuzzy_search, name='fuzzy-search'),
     path('search/within_polygon/', search_within_polygon, name='search-within-polygon'),
     path('clients/', ClientListCreateView.as_view(), name='client-list-create'),
@@ -29,4 +32,7 @@ urlpatterns = [
     path('search/fuzzy_properties/', PropertyFuzzySearchView.as_view(), name='fuzzy-search-properties'),
     path('search/within_polygon_properties/', search_properties_within_polygon, name='search-within-polygon-properties'),
     path('clients/search/', search_clients, name='search-clients'),
+    path('properties/', PropertyListView.as_view(), name='property-list'),
+    path('needs/', NeedListCreateView.as_view(), name='need-list-create'),
+    path('needs/<int:pk>/', NeedRetrieveUpdateDestroyView.as_view(), name='need-retrieve-update-destroy'),
 ]

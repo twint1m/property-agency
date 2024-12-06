@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from django.db.models import Q
 from Levenshtein import distance as levenshtein_distance
-from .models import Client, Realtor
+from .models import Client, Realtor, Property
 from .serializers import ClientSerializer, RealtorSerializer
 
 
@@ -223,17 +223,48 @@ class LandRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 from django.db.models import Q
 from .serializers import PropertySerializer
 
+# django/project/real_estate/views.py
+from rest_framework import generics
+from rest_framework.exceptions import ValidationError
+from django.db.models import Value, CharField
+from .models import Apartment, House, Land
+from .serializers import ApartmentSerializer, HouseSerializer, LandSerializer
+
 class PropertyFilterView(generics.ListAPIView):
-    serializer_class = PropertySerializer
+    def get_serializer_class(self):
+        first_object = self.get_queryset().first()
+        if isinstance(first_object, Apartment):
+            return ApartmentSerializer
+        elif isinstance(first_object, House):
+            return HouseSerializer
+        elif isinstance(first_object, Land):
+            return LandSerializer
+        raise ValidationError("No valid property type found.")
 
     def get_queryset(self):
-        queryset = Property.objects.all()
         property_type = self.request.query_params.get('type')
         city = self.request.query_params.get('city')
         street = self.request.query_params.get('street')
 
+        common_fields = ['id', 'city', 'street', 'house_number', 'apartment_number', 'latitude', 'longitude', 'area']
+        apartment_fields = common_fields + ['floor', 'rooms']
+        house_fields = common_fields + ['floors', 'rooms']
+        land_fields = common_fields
+
+        queryset = Apartment.objects.none()
         if property_type:
-            queryset = queryset.filter(type=property_type)
+            if property_type.lower() == 'apartment':
+                queryset = Apartment.objects.values(*apartment_fields).annotate(property_type=Value('apartment', output_field=CharField()))
+            elif property_type.lower() == 'house':
+                queryset = House.objects.values(*house_fields).annotate(property_type=Value('house', output_field=CharField()))
+            elif property_type.lower() == 'land':
+                queryset = Land.objects.values(*land_fields).annotate(property_type=Value('land', output_field=CharField()))
+        else:
+            apartment_queryset = Apartment.objects.values(*apartment_fields).annotate(property_type=Value('apartment', output_field=CharField()))
+            house_queryset = House.objects.values(*house_fields).annotate(property_type=Value('house', output_field=CharField()))
+            land_queryset = Land.objects.values(*land_fields).annotate(property_type=Value('land', output_field=CharField()))
+            queryset = apartment_queryset.union(house_queryset, land_queryset)
+
         if city:
             queryset = queryset.filter(city__icontains=city)
         if street:
@@ -444,3 +475,55 @@ class PropertyFuzzySearchView(generics.GenericAPIView):
                 results.append(serializer_class(obj).data)
 
         return results
+
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .models import Apartment, House, Land
+from .serializers import ApartmentSerializer, HouseSerializer, LandSerializer
+
+class PropertyListView(APIView):
+    def get(self, request, *args, **kwargs):
+        apartments = Apartment.objects.all()
+        houses = House.objects.all()
+        lands = Land.objects.all()
+
+        apartment_serializer = ApartmentSerializer(apartments, many=True)
+        house_serializer = HouseSerializer(houses, many=True)
+        land_serializer = LandSerializer(lands, many=True)
+
+        results = [
+            {"type": "apartment", **data} for data in apartment_serializer.data
+        ] + [
+            {"type": "house", **data} for data in house_serializer.data
+        ] + [
+            {"type": "land", **data} for data in land_serializer.data
+        ]
+
+        return Response(results)
+
+
+from rest_framework import generics
+from .models import Offer
+from .serializers import OfferSerializer
+
+class OfferRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Offer.objects.all()
+    serializer_class = OfferSerializer
+
+from rest_framework import generics
+from .models import Need
+from .serializers import NeedSerializer
+from rest_framework.exceptions import ValidationError
+
+class NeedListCreateView(generics.ListCreateAPIView):
+    queryset = Need.objects.all()
+    serializer_class = NeedSerializer
+
+class NeedRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Need.objects.all()
+    serializer_class = NeedSerializer
+
+    def perform_destroy(self, instance):
+        if instance.offers.exists():
+            raise ValidationError("Cannot delete a need associated with an offer.")
+        instance.delete()
