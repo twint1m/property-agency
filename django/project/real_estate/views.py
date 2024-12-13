@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from django.db.models import Q
 from Levenshtein import distance as levenshtein_distance
-from .models import Client, Realtor, Property
-from .serializers import ClientSerializer, RealtorSerializer
+from .models import Client, Realtor, Property, Deal
+from .serializers import ClientSerializer, RealtorSerializer, DealSerializer
 
 
 
@@ -546,3 +546,50 @@ class NeedRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 def property_type_list(request):
     property_types = [{"value": choice[0], "label": choice[1]} for choice in Need.PROPERTY_TYPE_CHOICES]
     return Response(property_types)
+
+# django/project/real_estate/views.py
+
+# django/project/real_estate/views.py
+
+from rest_framework import generics
+from .models import Deal
+from .serializers import DealSerializer
+from rest_framework.exceptions import ValidationError
+
+# django/project/real_estate/views.py
+from rest_framework import generics
+from .models import Deal
+from .serializers import DealSerializer
+from rest_framework.exceptions import ValidationError
+import logging
+
+logger = logging.getLogger(__name__)
+
+class DealListCreateView(generics.ListCreateAPIView):
+    queryset = Deal.objects.all()
+    serializer_class = DealSerializer
+
+    def perform_create(self, serializer):
+        need = serializer.validated_data.get('need')
+        offer = serializer.validated_data.get('offer')
+        if hasattr(need, 'deal') or hasattr(offer, 'deal'):
+            raise ValidationError("The selected need or offer is already part of another deal.")
+        try:
+            serializer.save()
+        except ValidationError as e:
+            logger.error(f"Validation error: {e}")
+            raise e
+        except Exception as e:
+            logger.error(f"Unexpected error: {e}")
+            raise ValidationError("An unexpected error occurred.")
+
+class DealRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Deal.objects.all()
+    serializer_class = DealSerializer
+
+    def perform_update(self, serializer):
+        need = serializer.validated_data['need']
+        offer = serializer.validated_data['offer']
+        if hasattr(need, 'deal') or hasattr(offer, 'deal'):
+            raise ValidationError("The selected need or offer is already part of another deal.")
+        serializer.save()

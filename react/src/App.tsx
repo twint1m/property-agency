@@ -1,15 +1,17 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './components/Home';
-import ClientFormPage from './components/pages/ClientFormPage';
-import RealtorFormPage from './components/pages/RealtorFormPage';
+import ClientFormPage from "./components/pages/ClientFormPage";
+import RealtorFormPage from "./components/pages/RealtorFormPage";
 import FuzzySearch from './components/FuzzySearch';
-import PropertyFormPage from './components/pages/PropertyFormPage';
-import PropertySearchPage from './components/pages/PropertySearchPage';
-import OfferFormPage from './components/pages/OfferFormPage';
-import NeedFormPage from './components/pages/NeedFormPage';
-import ClientNeedsPage from './components/pages/ClientNeedsPage';
-import ClientRealtorManagementPage from './components/pages/ClientRealtorManagementPage';
+import PropertyFormPage from "./components/pages/PropertyFormPage";
+import PropertySearchPage from "./components/pages/PropertySearchPage";
+import OfferFormPage from "./components/pages/OfferFormPage";
+import NeedFormPage from "./components/pages/NeedFormPage";
+import ClientNeedsPage from "./components/pages/ClientNeedsPage";
+import ClientRealtorManagementPage from "./components/pages/ClientRealtorManagementPage";
+import CreateDeal from './components/Deal/CreateDeal';
+import DealFormPage from "./components/pages/DealFormPage.tsx";
 
 const App = () => {
     return (
@@ -25,6 +27,8 @@ const App = () => {
                 <Route path="/need-form" element={<NeedFormPage />} />
                 <Route path="/client-needs" element={<ClientNeedsPage />} />
                 <Route path="/client-realtor-management" element={<ClientRealtorManagementPage />} />
+                <Route path="/create-deal" element={<CreateDeal />} />
+                <Route path="/deal-form" element={<DealFormPage />} />
             </Routes>
         </Router>
     );

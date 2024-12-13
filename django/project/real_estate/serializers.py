@@ -71,3 +71,19 @@ class NeedSerializer(serializers.ModelSerializer):
             if data.get('min_floors') and data.get('max_floors') and data['min_floors'] > data['max_floors']:
                 raise serializers.ValidationError("Min floors cannot be greater than max floors.")
         return data
+
+
+from rest_framework import serializers
+from .models import Deal
+
+class DealSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Deal
+        fields = '__all__'
+
+    def validate(self, data):
+        need = data.get('need')
+        offer = data.get('offer')
+        if hasattr(need, 'deal') or hasattr(offer, 'deal'):
+            raise serializers.ValidationError("The selected need or offer is already part of another deal.")
+        return data

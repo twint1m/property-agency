@@ -1,6 +1,5 @@
 // react/src/components/Home.tsx
-import React from 'react';
-import { Link } from 'react-router-dom';
+import {Link} from "react-router-dom";
 
 const Home = () => {
     return (
@@ -20,6 +19,7 @@ const Home = () => {
                     <li><Link to="/realtor-needs">Realtor Needs</Link></li>
                     <li><Link to="/realtor-offers">Realtor Offers</Link></li>
                     <li><Link to="/client-realtor-management">Client and Realtor Management</Link></li>
+                    <li><Link to="/deal-form">Deal Form</Link></li>
                 </ul>
             </nav>
         </div>
