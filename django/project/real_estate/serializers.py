@@ -87,3 +87,13 @@ class DealSerializer(serializers.ModelSerializer):
         if hasattr(need, 'deal') or hasattr(offer, 'deal'):
             raise serializers.ValidationError("The selected need or offer is already part of another deal.")
         return data
+
+
+
+from rest_framework import serializers
+from .models import Event
+
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = '__all__'

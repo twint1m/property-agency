@@ -9,7 +9,8 @@ from .views import (
     PropertyListView, search_properties_within_polygon,
     ClientListCreateView, ClientRetrieveUpdateDestroyView,
     RealtorListCreateView, RealtorRetrieveUpdateDestroyView,
-    NeedListCreateView, NeedRetrieveUpdateDestroyView, property_type_list, DealListCreateView, DealRetrieveUpdateDestroyView
+    NeedListCreateView, NeedRetrieveUpdateDestroyView, property_type_list, DealListCreateView, DealRetrieveUpdateDestroyView,
+    EventListCreateView, EventRetrieveUpdateDestroyView
 )
 
 urlpatterns = [
@@ -38,4 +39,6 @@ urlpatterns = [
     path('property-types/', property_type_list, name='property-type-list'),
     path('deals/', DealListCreateView.as_view(), name='deal-list-create'),
     path('deals/<int:pk>/', DealRetrieveUpdateDestroyView.as_view(), name='deal-retrieve-update-destroy'),
+    path('events/', EventListCreateView.as_view(), name='event-list-create'),
+    path('events/<int:pk>/', EventRetrieveUpdateDestroyView.as_view(), name='event-retrieve-update-destroy'),
 ]

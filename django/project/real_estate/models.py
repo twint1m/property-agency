@@ -2,105 +2,96 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Client(models.Model):
-    first_name = models.CharField(max_length=50, blank=True, null=True)
-    last_name = models.CharField(max_length=50, blank=True, null=True)
-    middle_name = models.CharField(max_length=50, blank=True, null=True)
-    phone_number = models.CharField(max_length=15, blank=True, null=True)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    middle_name = models.CharField(max_length=100, blank=True, null=True)
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}".strip()
+        return f"{self.first_name} {self.last_name}"
 
 class Realtor(models.Model):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    middle_name = models.CharField(max_length=50)
-    commission_share = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    middle_name = models.CharField(max_length=100, blank=True, null=True)
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
 class Property(models.Model):
-    city = models.CharField(max_length=100, blank=True, null=True)
-    street = models.CharField(max_length=100, blank=True, null=True)
-    house_number = models.CharField(max_length=10, blank=True, null=True)
+    city = models.CharField(max_length=100)
+    street = models.CharField(max_length=100)
+    house_number = models.CharField(max_length=10)
     apartment_number = models.CharField(max_length=10, blank=True, null=True)
-    latitude = models.FloatField(blank=True, null=True)
-    longitude = models.FloatField(blank=True, null=True)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    area = models.FloatField(validators=[MinValueValidator(0.0)])
 
     class Meta:
         abstract = True
 
 class Apartment(Property):
-    floor = models.IntegerField(blank=True, null=True)
-    rooms = models.IntegerField(blank=True, null=True)
-    area = models.FloatField(blank=True, null=True)
-
-class House(Property):
-    floors = models.IntegerField(blank=True, null=True)
-    rooms = models.IntegerField(blank=True, null=True)
-    area = models.FloatField(blank=True, null=True)
-
-class Land(Property):
-    area = models.FloatField(blank=True, null=True)
-
-class Offer(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.PROTECT, related_name='offers', blank=True, null=True)
-    realtor = models.ForeignKey(Realtor, on_delete=models.PROTECT, related_name='offers', blank=True, null=True)
-    apartment = models.ForeignKey(Apartment, on_delete=models.PROTECT, blank=True, null=True)
-    house = models.ForeignKey(House, on_delete=models.PROTECT, blank=True, null=True)
-    land = models.ForeignKey(Land, on_delete=models.PROTECT, blank=True, null=True)
-    description = models.TextField(blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-
-from django.db import models
-
-class Need(models.Model):
-    PROPERTY_TYPE_CHOICES = [
-        ('apartment', 'Apartment'),
-        ('house', 'House'),
-        ('land', 'Land'),
-    ]
-
-    client = models.ForeignKey(Client, on_delete=models.PROTECT)
-    realtor = models.ForeignKey(Realtor, on_delete=models.PROTECT)
-    property_type = models.CharField(max_length=10, choices=PROPERTY_TYPE_CHOICES)
-    address = models.CharField(max_length=255)
-    min_price = models.PositiveIntegerField()
-    max_price = models.PositiveIntegerField()
-    min_area = models.PositiveIntegerField(null=True, blank=True)
-    max_area = models.PositiveIntegerField(null=True, blank=True)
-    min_rooms = models.PositiveIntegerField(null=True, blank=True)
-    max_rooms = models.PositiveIntegerField(null=True, blank=True)
-    min_floor = models.PositiveIntegerField(null=True, blank=True)
-    max_floor = models.PositiveIntegerField(null=True, blank=True)
-    min_floors = models.PositiveIntegerField(null=True, blank=True)
-    max_floors = models.PositiveIntegerField(null=True, blank=True)
+    floor = models.IntegerField(validators=[MinValueValidator(0)])
+    rooms = models.IntegerField(validators=[MinValueValidator(1)])
 
     def __str__(self):
-        return f"{self.client} - {self.property_type} need"
+        return f"Apartment: {self.city}, {self.street}, {self.house_number}, {self.apartment_number}"
+
+class House(Property):
+    floors = models.IntegerField(validators=[MinValueValidator(1)])
+    rooms = models.IntegerField(validators=[MinValueValidator(1)])
+
+    def __str__(self):
+        return f"House: {self.city}, {self.street}, {self.house_number}"
+
+class Land(Property):
+    def __str__(self):
+        return f"Land: {self.city}, {self.street}, {self.house_number}"
 
 class Offer(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.PROTECT, related_name='offers', blank=True, null=True)
-    realtor = models.ForeignKey(Realtor, on_delete=models.PROTECT, related_name='offers', blank=True, null=True)
-    apartment = models.ForeignKey(Apartment, on_delete=models.PROTECT, blank=True, null=True)
-    house = models.ForeignKey(House, on_delete=models.PROTECT, blank=True, null=True)
-    land = models.ForeignKey(Land, on_delete=models.PROTECT, blank=True, null=True)
-    description = models.TextField(blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    description = models.TextField(blank=True, null=True)
+    realtor = models.ForeignKey(Realtor, on_delete=models.CASCADE)
+    price = models.PositiveIntegerField()
+    apartment = models.ForeignKey(Apartment, on_delete=models.CASCADE, blank=True, null=True)
+    house = models.ForeignKey(House, on_delete=models.CASCADE, blank=True, null=True)
+    land = models.ForeignKey(Land, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return f"Offer: {self.client} - {self.price}"
 
+class Need(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    property_type = models.CharField(max_length=20, choices=[('apartment', 'Apartment'), ('house', 'House'), ('land', 'Land')])
+    min_price = models.PositiveIntegerField()
+    max_price = models.PositiveIntegerField()
+    min_area = models.FloatField(validators=[MinValueValidator(0.0)])
+    max_area = models.FloatField(validators=[MinValueValidator(0.0)])
+    min_floor = models.IntegerField(validators=[MinValueValidator(0)], blank=True, null=True)
+    max_floor = models.IntegerField(validators=[MinValueValidator(0)], blank=True, null=True)
+    min_floors = models.IntegerField(validators=[MinValueValidator(1)], blank=True, null=True)
+    max_floors = models.IntegerField(validators=[MinValueValidator(1)], blank=True, null=True)
 
-
-from django.db import models
+    def __str__(self):
+        return f"Need: {self.client} - {self.property_type}"
 
 class Deal(models.Model):
-    need = models.OneToOneField(Need, on_delete=models.PROTECT, related_name='deal')
-    offer = models.OneToOneField(Offer, on_delete=models.PROTECT, related_name='deal')
+    need = models.ForeignKey(Need, on_delete=models.CASCADE)
+    offer = models.ForeignKey(Offer, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"Deal: {self.need} - {self.offer}"
+
+class Event(models.Model):
+    datetime = models.DateTimeField()
+    duration = models.DurationField(blank=True, null=True)
+    event_type = models.CharField(max_length=20, choices=[('meeting', 'Meeting with Client'), ('showing', 'Showing'), ('call', 'Scheduled Call')])
+    comment = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"Event: {self.event_type} on {self.datetime}"

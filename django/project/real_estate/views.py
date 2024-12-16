@@ -593,3 +593,21 @@ class DealRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         if hasattr(need, 'deal') or hasattr(offer, 'deal'):
             raise ValidationError("The selected need or offer is already part of another deal.")
         serializer.save()
+
+
+from rest_framework import generics
+from .models import Event
+from .serializers import EventSerializer
+from django.utils.timezone import now
+
+class EventListCreateView(generics.ListCreateAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+
+    def get_queryset(self):
+        today = now().date()
+        return Event.objects.filter(datetime__date=today)
+
+class EventRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
