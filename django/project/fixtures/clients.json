@@ -1,0 +1,57 @@
+[
+  {
+    "model": "real_estate.client",
+    "pk": 1,
+    "fields": {
+      "first_name": "Ivan",
+      "last_name": "Petrov",
+      "middle_name": "Sergeevich",
+      "phone_number": "+79111234567",
+      "email": "ivan.petrov@example.com"
+    }
+  },
+  {
+    "model": "real_estate.client",
+    "pk": 2,
+    "fields": {
+      "first_name": "Anna",
+      "last_name": "Ivanova",
+      "middle_name": "Dmitrievna",
+      "phone_number": "+79217654321",
+      "email": "anna.ivanova@example.com"
+    }
+  },
+  {
+    "model": "real_estate.client",
+    "pk": 3,
+    "fields": {
+      "first_name": "Sergey",
+      "last_name": "Kuznetsov",
+      "middle_name": "Olegovich",
+      "phone_number": "+79507894562",
+      "email": "sergey.kuznetsov@example.com"
+    }
+  },
+  {
+    "model": "real_estate.client",
+    "pk": 4,
+    "fields": {
+      "first_name": "Elena",
+      "last_name": "Smirnova",
+      "middle_name": "Vladimirovna",
+      "phone_number": "+79001234567",
+      "email": "elena.smirnova@example.com"
+    }
+  },
+  {
+    "model": "real_estate.client",
+    "pk": 5,
+    "fields": {
+      "first_name": "Dmitry",
+      "last_name": "Fedorov",
+      "middle_name": "Andreevich",
+      "phone_number": "+79876543210",
+      "email": "dmitry.fedorov@example.com"
+    }
+  }
+]

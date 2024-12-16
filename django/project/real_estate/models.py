@@ -88,9 +88,15 @@ class Deal(models.Model):
         return f"Deal: {self.need} - {self.offer}"
 
 class Event(models.Model):
+    EVENT_TYPES = [
+        ('meeting', 'Meeting with Client'),
+        ('showing', 'Showing'),
+        ('call', 'Scheduled Call')
+    ]
+
     datetime = models.DateTimeField()
     duration = models.DurationField(blank=True, null=True)
-    event_type = models.CharField(max_length=20, choices=[('meeting', 'Meeting with Client'), ('showing', 'Showing'), ('call', 'Scheduled Call')])
+    event_type = models.CharField(max_length=20, choices=EVENT_TYPES)
     comment = models.TextField(blank=True, null=True)
 
     def __str__(self):

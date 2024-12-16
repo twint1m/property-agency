@@ -1,0 +1,77 @@
+[
+  {
+    "model": "real_estate.house",
+    "pk": 1,
+    "fields": {
+      "city": "City1",
+      "street": "Street1",
+      "house_number": "1",
+      "apartment_number": null,
+      "latitude": 55.7558,
+      "longitude": 37.6176,
+      "area": 120.5,
+      "floors": 2,
+      "rooms": 5
+    }
+  },
+  {
+    "model": "real_estate.house",
+    "pk": 2,
+    "fields": {
+      "city": "City2",
+      "street": "Street2",
+      "house_number": "2",
+      "apartment_number": null,
+      "latitude": 59.9343,
+      "longitude": 30.3351,
+      "area": 150.0,
+      "floors": 3,
+      "rooms": 6
+    }
+  },
+  {
+    "model": "real_estate.house",
+    "pk": 3,
+    "fields": {
+      "city": "City3",
+      "street": "Street3",
+      "house_number": "3",
+      "apartment_number": null,
+      "latitude": 48.8566,
+      "longitude": 2.3522,
+      "area": 200.0,
+      "floors": 4,
+      "rooms": 8
+    }
+  },
+  {
+    "model": "real_estate.house",
+    "pk": 4,
+    "fields": {
+      "city": "City4",
+      "street": "Street4",
+      "house_number": "4",
+      "apartment_number": null,
+      "latitude": 40.7128,
+      "longitude": -74.0060,
+      "area": 180.0,
+      "floors": 3,
+      "rooms": 7
+    }
+  },
+  {
+    "model": "real_estate.house",
+    "pk": 5,
+    "fields": {
+      "city": "City5",
+      "street": "Street5",
+      "house_number": "5",
+      "apartment_number": null,
+      "latitude": 34.0522,
+      "longitude": -118.2437,
+      "area": 220.0,
+      "floors": 5,
+      "rooms": 10
+    }
+  }
+]
