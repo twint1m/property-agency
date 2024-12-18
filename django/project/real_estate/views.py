@@ -600,13 +600,13 @@ from .models import Event
 from .serializers import EventSerializer
 from django.utils.timezone import now
 
+from rest_framework import generics
+from .models import Event
+from .serializers import EventSerializer
+
 class EventListCreateView(generics.ListCreateAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-
-    def get_queryset(self):
-        today = now().date()
-        return Event.objects.filter(datetime__date=today)
 
 class EventRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Event.objects.all()
